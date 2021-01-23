@@ -32,7 +32,7 @@ pipeline_args(){
 
     int list_count = 5;
     
-    for(int i = 0 ; i < 10000 ; ++i){
+    for(int i = 0 ; i < 100000 ; ++i){
         const char * buf2[2 + list_count * 2] = {"ZADD", };
         std::string scores[list_count];
         std::string values[list_count];
@@ -52,7 +52,7 @@ pipeline_args(){
         }
     }
 
-    for(int i = 0 ; i < 10000 ; ++i){
+    for(int i = 0 ; i < 100000 ; ++i){
         ret = redisGetReply(c, (void **)&reply);
         if(ret != REDIS_OK){
             printf("redisGetReply fail :%d\n", ret);

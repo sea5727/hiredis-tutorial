@@ -4,7 +4,6 @@ add_executable(async_reconnect2 async_reconnect2.cpp)
 add_executable(async_reconnect_with_timer async_reconnect_with_timer.cpp)
 add_executable(redis_command redis_command.cpp)
 add_executable(redis_command_args redis_command_args.cpp)
-add_executable(redis_command_formmated redis_command_formmated.cpp)
 
 
 # add_executable(redis_command redis_command.cpp)

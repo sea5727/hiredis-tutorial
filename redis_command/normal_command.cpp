@@ -10,7 +10,7 @@ void
 command(){
     redisReply * reply;
     int ret;
-    for(int i = 0 ; i < 1000 ; ++i){
+    for(int i = 0 ; i < 100000 ; ++i){
         reply = (redisReply *)redisCommand(c, "%s %s%d %s", "SET", "KEY", i,  "VALUE3"); // FAIL 
         if(reply == nullptr){
             printf("redisAppendCommand fail :%d\n", ret);

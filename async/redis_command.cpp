@@ -23,7 +23,7 @@ redisAsyncCommandCallback(
         printf("redisAsyncCommandCallback reply is null\n");
         return;
     }
-    if(i == 1000) exit(0);
+    if(i == 100000) exit(0);
     redisAsyncCommand(c2, redisAsyncCommandCallback, NULL,  "%s %s%d %s", "SET", "KEY", i,  "VALUE3");
     i += 1;
     
