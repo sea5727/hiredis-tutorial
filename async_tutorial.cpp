@@ -3,9 +3,9 @@
 #include <string.h>
 #include <signal.h>
 
-#include <hiredis.h>
-#include <async.h>
-#include <adapters/libuv.h>
+#include <hiredis/hiredis.h>
+#include <hiredis/async.h>
+#include <hiredis/adapters/libuv.h>
 #include <vector>
 #include <thread>
 
