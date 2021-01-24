@@ -23,9 +23,9 @@ redisAsyncCommandCallback(
         printf("redisAsyncCommandCallback reply is null\n");
         return;
     }
-    if(i == 100000) exit(0);
-    redisAsyncCommand(c2, redisAsyncCommandCallback, NULL,  "%s %s%d %s", "SET", "KEY", i,  "VALUE3");
-    i += 1;
+    // if(i == 100000) exit(0);
+    // redisAsyncCommand(c2, redisAsyncCommandCallback, NULL,  "%s %s%d %s", "SET", "KEY", i,  "VALUE3");
+    // i += 1;
     
 }
 
@@ -54,10 +54,14 @@ int main(int argc, char * argv[]){
     c2 = redisAsyncConnect("192.168.0.35", 6380);
 
 
+    printf("redisLibuvAttach start\n");
     redisLibuvAttach(c2, loop);
+    printf("redisAsyncSetConnectCallback start\n");
     redisAsyncSetConnectCallback(c2, connectCallback);
+    printf("redisAsyncSetDisconnectCallback start\n");
     redisAsyncSetDisconnectCallback(c2, disconnectCallback);
 
+    printf("uv_run start\n");
     uv_run(loop, UV_RUN_DEFAULT);
 
     printf("end\n");

@@ -6,7 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 include(CTest)
 enable_testing()
 
+message(${PROJECT_SOURCE_DIR})
+
 include_directories(/usr/local/include/hiredis /usr/local/include/ae)
+include_directories(${PROJECT_SOURCE_DIR}/EventCLoop)
 
 link_libraries(hiredis /usr/local/lib64/libuv.so pthread)
 link_libraries(event event_core event_pthreads event_extra)
@@ -19,7 +22,7 @@ add_executable(mytest mytest.cpp)
 add_subdirectory(libuv)
 add_subdirectory(async_libuv)
 add_subdirectory(async_libevent)
-
+add_subdirectory(custom_async)
 add_subdirectory(connect)
 add_subdirectory(redis_command)
 
