@@ -17,11 +17,15 @@ redisAsyncCommandCallback(
 
     reply = (redisReply *)r;
 
-    if(reply == nullptr) {
+    if(reply == NULL) {
         printf("redisAsyncCommandCallback reply is null\n");
         return;
     }
-    printf("redisAsyncCommandCallback..\n");
+    printf("redisAsyncCommandCallback..%d, %ld, %lu, %s\n",
+        reply->type,
+        reply->integer,
+        reply->len,
+        reply->str);
     // if(i == 100000) exit(0);
     // redisAsyncCommand(c2, redisAsyncCommandCallback, NULL,  "%s %s%d %s", "SET", "KEY", i,  "VALUE3");
     // i += 1;
@@ -33,7 +37,7 @@ void connectCallback(
     const redisAsyncContext* c2, 
     int status){
 
-    printf("connectCallback start\n");
+    printf("connectCallback start.. SET KEY123 VALUE3??\n");
 
     redisAsyncCommand(ac, redisAsyncCommandCallback, NULL,  "%s %s %s", "SET", "KEY123",  "VALUE3");
 
@@ -61,6 +65,7 @@ int main(int argc, char *argv[]){
     redisAsyncSetDisconnectCallback(ac, disconnectCallback);
 
     while(1){
+        printf("epoll.Run start\n");
         epoll.Run();
     }
     

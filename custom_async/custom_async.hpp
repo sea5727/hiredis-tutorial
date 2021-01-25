@@ -35,6 +35,7 @@ redisPoll(
     }
     else if(ev.events & EPOLLIN){ // already connected ?? 
         std::cout << "[CONNECT] EPOLLIN ? \n";
+        redisAsyncHandleRead(e->context);
     }
     else if(ev.events & EPOLLOUT){
         // epoll->DelEvent(ev.data.fd);
@@ -66,7 +67,7 @@ redisAddWrite(void *privdata) {
     ev.data.fd = event.fd;
     ev.events = EPOLLOUT;
 
-    epoll->ModEvent(event, ev);
+    epoll->ModEvent(event.fd, ev);
 }
 
 static
@@ -79,13 +80,6 @@ redisDelWrite(void *privdata){
 
     printf("redisDelWrite e:%p, c:%p\n", e, c);
 
-    // using std::placeholders::_1;
-    // auto event = EventCLoop::Event{};
-    // event.fd = c->fd;
-    // event.pop = std::bind(redisPoll, _1, e);
-    // struct epoll_event ev;
-    // ev.data.fd = event.fd;
-    // ev.events = EPOLLOUT;
 
     epoll->DelEvent(c->fd);
 }
@@ -93,13 +87,34 @@ redisDelWrite(void *privdata){
 static
 void
 redisAddRead(void *privdata){
-    printf("redisAddRead start\n");
+    RedisEvent* e = (RedisEvent*)privdata;
+    redisContext *c = &e->context->c;
+    EventCLoop::Epoll * epoll = e->epoll;
+
+    printf("redisAddRead e:%p, c:%p\n", e, c);
+
+    using std::placeholders::_1;
+    auto event = EventCLoop::Event{};
+    event.fd = c->fd;
+    event.pop = std::bind(redisPoll, _1, e);
+    struct epoll_event ev;
+    ev.data.fd = event.fd;
+    ev.events = EPOLLIN;
+
+    epoll->AddEvent(event, ev);
 }
 
 static
 void
 redisDelRead(void *privdata){
-    printf("redisDelRead start\n");
+    RedisEvent* e = (RedisEvent*)privdata;
+    redisContext *c = &e->context->c;
+    EventCLoop::Epoll * epoll = e->epoll;
+
+    printf("redisDelRead e:%p, c:%p\n", e, c);
+
+
+    epoll->DelEvent(c->fd);
 
 }
 
@@ -133,7 +148,7 @@ redisAttach(redisAsyncContext * ac, EventCLoop::Epoll * epoll){
     using std::placeholders::_1;
     auto event = EventCLoop::Event{};
     event.fd = c->fd;
-    // event.pop = std::bind(redisPoll, _1, e);
+    event.pop = std::bind(redisPoll, _1, e);
     struct epoll_event ev;
     ev.data.fd = event.fd;
     ev.events = EPOLLIN | EPOLLOUT;

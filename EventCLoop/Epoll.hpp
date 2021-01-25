@@ -49,7 +49,7 @@ namespace EventCLoop{
             std::cout << "[" << now_str() << "] ========== start Call AddEvent : " << event.fd << std::endl;
         #endif
             if(epoll_ctl(epollfd, EPOLL_CTL_ADD, event->fd, &ev) == -1){
-                error = Error{std::string{"epoll_ctl EPOLL_CTL_ADD fail : "} + strerror(errno)};
+                error = Error{std::string{"epoll_ctl EPOLL_CTL_ADD fail : "} + strerror(errno) + std::to_string(errno)};
                 return;
             }
             // pallevent[event->fd] = event;
@@ -64,9 +64,13 @@ namespace EventCLoop{
         #endif
             std::cout << " ========== start Call AddEvent : " << event.fd << std::endl;
             if(epoll_ctl(epollfd, EPOLL_CTL_ADD, event.fd, &ev) == -1){
-                printf("epollfd:%d, event.fd:%d, strerror:%s\n", epollfd, event.fd, strerror(errno));
-                error = Error{std::string{"epoll_ctl EPOLL_CTL_ADD fail : "} + strerror(errno)};
-                return;
+                if(errno == EEXIST){
+                    if(epoll_ctl(epollfd, EPOLL_CTL_MOD, event.fd, &ev) == -1){
+                        printf("epollfd:%d, event.fd:%d, errno:%d, strerror:%s\n", epollfd, event.fd, errno, strerror(errno));
+                        error = Error{std::string{"epoll_ctl EPOLL_CTL_ADD fail : "} + strerror(errno)};
+                        return;
+                    }
+                }
             }
             allevent[event.fd] = event;
         }
